@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ShellScheduler;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShellScheduler.Tests.Mocks;
+using System;
 
 namespace ShellScheduler.Tests
 {
