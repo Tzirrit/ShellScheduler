@@ -11,7 +11,7 @@ namespace ShellScheduler
         private Scheduler _scheduler;
 
         /// <summary>
-        /// Arguments: AppPath, ExecutionIntervalInHours, NextExecutionAt
+        /// Arguments: AppPath, ExecutionIntervalInMinutes, NextExecutionAt
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
@@ -173,7 +173,7 @@ namespace ShellScheduler
         /// <param name="arg"></param>
         private void SetApplicationPath(string arg)
         {
-            WriteToConsole("Setting AppPath to '" + arg + "'.", ConsoleColor.DarkGreen);
+            WriteToConsole("Setting application path to '" + arg + "'.", ConsoleColor.DarkGreen);
             _scheduler.ApplicationPath = arg;
         }
 
@@ -187,7 +187,7 @@ namespace ShellScheduler
             int.TryParse(arg, out interval);
 
             if (interval > 0)
-                WriteToConsole("Setting execution interval to " + interval + " hours.", ConsoleColor.DarkGreen);
+                WriteToConsole("Setting execution interval to " + interval + " minutes.", ConsoleColor.DarkGreen);
             else
                 WriteToConsole("Defaulting to execute only once.", ConsoleColor.Yellow);
 

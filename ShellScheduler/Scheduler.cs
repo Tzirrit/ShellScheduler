@@ -68,7 +68,6 @@ namespace ShellScheduler
 
             // Calculate delay in milliseconds until next execution
             int initialDelay = (int)(NextExecutionAt - DateTime.Now).TotalMilliseconds;
-            Console.WriteLine(initialDelay);
 
             // Set-up timer
             _timer = new Timer();
