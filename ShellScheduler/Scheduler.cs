@@ -38,7 +38,6 @@ namespace ShellScheduler
 
         public Scheduler(ILoggable logger)
         {
-            _timer = new Timer();
             _logger = logger;
 
             IsScheduled = false;
@@ -63,10 +62,16 @@ namespace ShellScheduler
             if (ApplicationPath == null)
                 return false;
 
+            // If interval is 0 or less, execute only once
+            if (ExecutionIntervalInMinutes <= 0)
+                return Execute();
+
             // Calculate delay in milliseconds until next execution
             int initialDelay = (int)(NextExecutionAt - DateTime.Now).TotalMilliseconds;
+            Console.WriteLine(initialDelay);
 
             // Set-up timer
+            _timer = new Timer();
             _timer.Interval = (initialDelay > 0) ? initialDelay : 1;
             _timer.AutoReset = false; // run only once
             _timer.Elapsed += OnTimedEvent;
@@ -129,7 +134,7 @@ namespace ShellScheduler
             // Show next planned execution
             if (ExecutionIntervalInMinutes > 0)
             {
-                NextExecutionAt = NextExecutionAt.AddSeconds(ExecutionIntervalInMinutes);
+                NextExecutionAt = NextExecutionAt.AddMinutes(ExecutionIntervalInMinutes);
                 _logger.AddLogEntry(
                     new LogEntry("Scheduled next execution of '" + ApplicationPath + "' for " + NextExecutionAt + ".", LogLevels.Message));
             }
@@ -171,18 +176,23 @@ namespace ShellScheduler
             {
                 // Start the process
                 process.Start();
-                process.BeginOutputReadLine();
+                //process.BeginOutputReadLine();
 
                 // Read output
                 if (process.StartInfo.RedirectStandardOutput)
                 {
-                    _logger.AddLogEntry(new LogEntry(process.StandardOutput.ReadToEnd()));
+                    string output = process.StandardOutput.ReadToEnd();
+                    if(output.Trim().Length > 0)
+                        _logger.AddLogEntry(new LogEntry(output));
                 }
                 if (process.StartInfo.RedirectStandardOutput)
                 {
-                    _logger.AddLogEntry(new LogEntry(process.StandardError.ReadToEnd(), LogLevels.Error));
+                    string error = process.StandardError.ReadToEnd();
+                    if (error.Trim().Length > 0)
+                        _logger.AddLogEntry(new LogEntry(error, LogLevels.Error));
                 }
                 process.WaitForExit();
+                
             }
             catch (Exception e)
             {
@@ -203,7 +213,7 @@ namespace ShellScheduler
         {
             // Write data to console, if not null or empty
             if (!String.IsNullOrEmpty(e.Data))
-                Console.WriteLine(e.Data);
+                _logger.AddLogEntry(new LogEntry(e.Data, LogLevels.Message));
         }
 
         /// <summary>
@@ -213,10 +223,7 @@ namespace ShellScheduler
         /// <param name="e"></param>
         void process_Exited(object sender, EventArgs e)
         {
-            /*
-            if (IsVerboseLoggingEnabled)
-                WriteToConsole("Process execution completed.", color: ConsoleColor.DarkGreen, showDateTime: true);
-                */
+            _logger.AddLogEntry(new LogEntry("Process execution completed.", LogLevels.Message));
         }
         #endregion
     }

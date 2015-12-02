@@ -7,7 +7,6 @@ namespace ShellScheduler
     {
         public bool IsVerboseLoggingEnabled { get { return true; } }
 
-        private List<LogEntry> _logEntries;
         private static Program _instance;
         private Scheduler _scheduler;
 
@@ -61,7 +60,7 @@ namespace ShellScheduler
                         break;
 
                     default:
-                        _instance.WriteToConsole(string.Format("Invalid command '{0}'\n Try 'help' for a list of all available commands.", keyIn), ConsoleColor.Yellow);
+                        _instance.WriteToConsole("Invalid command '" + keyIn +"'\n Try 'help' for a list of all available commands.", ConsoleColor.Yellow);
                         break;
                 }
 
@@ -75,7 +74,6 @@ namespace ShellScheduler
         private void Initialize(string[] args)
         {
             WriteToConsole("-= Welcome to the Shell Scheduler =-", ConsoleColor.White);
-            _logEntries = new List<LogEntry>();
             _scheduler = new Scheduler(this);
 
             // Check provided parameters
@@ -105,7 +103,7 @@ namespace ShellScheduler
                 // none or more
                 default:
                     if (IsVerboseLoggingEnabled)
-                        WriteToConsole("No or invalid number of arguments passed... Nothing to initialize.");
+                        WriteToConsole("No or invalid number of arguments passed... Nothing to initialize.", ConsoleColor.Yellow);
                     break;
             }
         }
@@ -312,6 +310,5 @@ namespace ShellScheduler
             Console.ResetColor();
         }
         #endregion
-
     }
 }
