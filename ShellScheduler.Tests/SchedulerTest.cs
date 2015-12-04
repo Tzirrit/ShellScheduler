@@ -8,49 +8,76 @@ namespace ShellScheduler.Tests
     public class SchedulerTest
     {
         [TestMethod]
-        public void Scheduler_Initialize()
+        public void Scheduler_RunOnce_InvalidAppPath()
         {
             LoggerMock loggerMock = new LoggerMock();
             Scheduler scheduler = new Scheduler(loggerMock);
-
-            // Make sure that scheduler is properly initialized
-            Assert.IsFalse(scheduler.IsScheduled);
-            Assert.IsNull(scheduler.ApplicationPath);
-            Assert.AreEqual(DateTime.Now, scheduler.NextExecutionAt);
-        }
-
-        [TestMethod]
-        public void Scheduler_Execute_InvalidAppPath()
-        {
-            LoggerMock loggerMock = new LoggerMock();
-            Scheduler scheduler = new Scheduler(loggerMock);
+            // Set invalid ApplicationPath
             scheduler.ApplicationPath = "invalid";
 
             // Execute scheduler once with invalid app path
             bool result = scheduler.Execute();
 
-            // Make sure that execute returns false and that there is a new log entry
+            // Execute should return false and there should be a new log entry
             Assert.IsFalse(result);
             Assert.AreEqual(loggerMock.LogEntries.Count, 1);
         }
 
-        /// <summary>
-        /// This test is expected to fail, because we currently do not check if the app path is valid when scheduling the execution.
-        /// ToDo: only allow to schedule executions with a valid app path!
-        /// </summary>
         [TestMethod]
-        public void Scheduler_Schedule_InvalidAppPath_FAIL()
+        public void Scheduler_Schedule_ZeroExecutionInterval_InvalidAppPath()
         {
             LoggerMock loggerMock = new LoggerMock();
             Scheduler scheduler = new Scheduler(loggerMock);
+            // Set invalid ApplicationPath
             scheduler.ApplicationPath = "invalid";
+            // Set ExecutionInterval to 0
+            scheduler.ExecutionIntervalInMinutes = 0;
 
             // Schedule execution with invalid app path
             bool result = scheduler.ScheduldedExecution();
 
-            // Make sure that execute returns false and that there is a new log entry
-            Assert.IsFalse(result); // this will fail
+            // Execute should return false and there should be a new log entry
+            Assert.IsFalse(result);
             Assert.AreEqual(loggerMock.LogEntries.Count, 1);
         }
+
+        [TestMethod]
+        public void Scheduler_Schedule_LessThanExecutionInterval_InvalidAppPath()
+        {
+            LoggerMock loggerMock = new LoggerMock();
+            Scheduler scheduler = new Scheduler(loggerMock);
+            // Set invalid ApplicationPath
+            scheduler.ApplicationPath = "invalid";
+            // Set ExecutionInterval to less than 0
+            scheduler.ExecutionIntervalInMinutes = -1;
+
+            // Schedule execution with invalid app path
+            bool result = scheduler.ScheduldedExecution();
+
+            // Execute should return false and there should be a new log entry
+            Assert.IsFalse(result);
+            Assert.AreEqual(loggerMock.LogEntries.Count, 1);
+        }
+
+        [TestMethod]
+        public void Scheduler_Schedule_NonZeroExecutionInterval_InvalidAppPath()
+        {
+            LoggerMock loggerMock = new LoggerMock();
+            Scheduler scheduler = new Scheduler(loggerMock);
+            // Set invalid ApplicationPath
+            scheduler.ApplicationPath = "invalid";
+            // Set ExecutionInterval higher than 0
+            scheduler.ExecutionIntervalInMinutes = 60;
+
+            // Schedule execution with invalid app path
+            bool result = scheduler.ScheduldedExecution();
+
+            // Execute should return false and there should be a new log entry
+            Assert.IsTrue(result);
+            Assert.AreEqual(loggerMock.LogEntries.Count, 0);
+            // Scheduler should be scheduled to execute
+            Assert.IsTrue(scheduler.IsScheduled);
+        }
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ShellScheduler
 {
@@ -69,6 +68,7 @@ namespace ShellScheduler
 
         /// <summary>
         /// Initializes the Scheduler.
+        /// Array of string arguments is optional.
         /// </summary>
         /// <param name="args"></param>
         private void Initialize(string[] args)
@@ -109,7 +109,7 @@ namespace ShellScheduler
         }
 
         /// <summary>
-        /// Shows all available commands.
+        /// Writes all available commands to the console.
         /// </summary>
         private void ShowHelp()
         {
@@ -124,7 +124,7 @@ namespace ShellScheduler
         }
 
         /// <summary>
-        /// Shows current parameters of scheduler.
+        /// Write current parameters of scheduler to the console.
         /// </summary>
         private void ShowCurrentParameters()
         {
@@ -141,7 +141,7 @@ namespace ShellScheduler
 
 
         /// <summary>
-        /// Shows current parameters of scheduler and lets user change or keep them.
+        /// Writes current parameters of scheduler to the console and lets user change or keep them.
         /// </summary>
         private void SetParameters()
         {
